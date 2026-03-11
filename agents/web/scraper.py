@@ -91,15 +91,17 @@ def ddg_search(query: str, max_results: int = 5):
               continue
 
               # remove listing/category pages
-              bad_patterns = [
+            bad_patterns = [
                   "/live/",
                   "/tag/",
                   "/category/",
                   "/topics/"
-              ]
+            ]
 
             if any(p in real_url for p in bad_patterns):
                   continue
+            if real_url.count("/") <= 3:
+              continue
             results.append({
                 "title": title_tag.get_text(strip=True),
                 "url": real_url,
