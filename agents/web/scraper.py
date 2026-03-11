@@ -83,7 +83,23 @@ def ddg_search(query: str, max_results: int = 5):
 
             else:
                 real_url = href
+            if not real_url.startswith("http"):
+              continue
 
+            # remove ads
+            if "duckduckgo.com/y.js" in real_url:
+              continue
+
+              # remove listing/category pages
+              bad_patterns = [
+                  "/live/",
+                  "/tag/",
+                  "/category/",
+                  "/topics/"
+              ]
+
+            if any(p in real_url for p in bad_patterns):
+                  continue
             results.append({
                 "title": title_tag.get_text(strip=True),
                 "url": real_url,
