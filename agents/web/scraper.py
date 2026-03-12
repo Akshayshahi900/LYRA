@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote, unquote, parse_qs, urlparse
 import time
 import random
+from concurrent.futures import ThreadPoolExecutor
 
 
 # -------------------------------
@@ -215,19 +216,25 @@ def web_search(query: str, deep=False):
 
     output["results"] = results
 
+    def fetch(url):
+      return {
+        "url":url,
+        "text":extract_page(url)
+      }
+
     if deep and results:
 
         for r in results[:3]:
 
-            url = r.get("url")
+            urls = [
+                  r.get("url")
+                  for r in results[:3]
+                  if r.get("url") and r.get("url").startswith("http")
+              ]
 
-            if url and url.startswith("http"):
+            with ThreadPoolExecutor(max_workers=3) as executor:
+              pages = list(executor.map(fetch, urls))
 
-                content = extract_page(url)
-
-                output["content"].append({
-                    "url": url,
-                    "text": content
-                })
+            output["content"] = pages
 
     return output
