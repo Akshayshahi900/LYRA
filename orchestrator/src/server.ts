@@ -1,19 +1,19 @@
 import express from "express";
 import { routeIntent } from "./router";
 import { createPlan } from "./planner";
-
+import { runPlan } from "./agentRunner";
 const app = express();
 app.use(express.json());
 
 app.post("/ask", async (req, res) => {
   const { message } = req.body;
+  const plan = await createPlan(message);
   const intent = await routeIntent(message);
 
-  const plan = await createPlan(message);
-
+  const toolResult = await runPlan(message, intent);
   res.json({
-    intent,
     plan,
+    toolResult,
   });
 });
 
