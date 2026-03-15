@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      - orchestrator
+
+  orchestrator:
+    build: ./orchestrator
+    ports:
+      - "3001:3001"
+    env_file: .env
+    depends_on:
+      - llm-service
+      - web-agent
+      - file-agent
+
+  llm-service:
+    build: ./llm-service
+    ports:
+      - "4000:4000"
+    env_file: .env
+
+  web-agent:
+    build: ./agents/web
+    ports:
+      - "8001:8001"
+    env_file: .env
+
+  file-agent:
+    build: ./agents/file
+    ports:
+      - "8002:8002"
+    env_file: .env
+
+  os-agent:
+    build: ./agents/os
+    ports:
+      - "8003:8003"
+    env_file: .env

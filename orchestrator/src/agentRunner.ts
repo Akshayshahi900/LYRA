@@ -1,11 +1,17 @@
-import { searchWeb } from "./toolRegistry";
+import { searchWeb, callAgent } from "./toolRegistry";
 
 export async function runPlan(query: string, intent: string) {
   if (intent === "search") {
-    const result = await searchWeb(query, true);
-    return result;
+    return searchWeb(query, true);
   }
-  return {
-    message: "No Tool Executed",
-  };
+  if (intent === "file") {
+    return callAgent("file", "/action", {
+      action: "list_directory",
+      payload: { path: "." },
+    });
+  }
+  if (intent === "system") {
+    return callAgent("os", "/run", { command: "uptime" });
+  }
+  return { message: "No Tool Executed" };
 }
