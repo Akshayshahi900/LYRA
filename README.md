@@ -1,4 +1,4 @@
-# LYRA — Multi-Agent Orchestration System
+# LYRA — A Local Personal Ai Assistant
 
 ## Architecture
 ```
